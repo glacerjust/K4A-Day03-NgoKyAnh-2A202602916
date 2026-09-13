@@ -11,41 +11,59 @@ from typing import Dict, Any
 # ==============================================================================
 
 TOOLS_SCHEMA = [
-    # Tool 1: Đã được định nghĩa mẫu sẵn cho Học viên tham khảo
     {
-        "name": "academic_query",
-        "description": "Tra cứu hồ sơ và thông tin học vụ của sinh viên VinUni bằng mã sinh viên.",
+        "name": "query_job_requirements",
+        "description": "Tra cứu tiêu chí tuyển dụng cho một vị trí công việc cụ thể.",
         "parameters": {
             "type": "object",
             "properties": {
-                "student_id": {
+                "job_title": {
                     "type": "string",
-                    "description": "Mã sinh viên cần tra cứu (ví dụ: 'SV2026001')"
+                    "description": "Tên vị trí công việc cần tra cứu (ví dụ: 'Data Scientist', 'AI Engineer')"
                 }
             },
-            "required": ["student_id"]
+            "required": ["job_title"]
         }
     },
     
     # --------------------------------------------------------------------------
-    # TODO 1.2: HỌC VIÊN HOÀN THIỆN TOOL SCHEMA CHO 'schedule_appointment'
-    # 🎯 YÊU CẦU THIẾT KẾ SCHEMA (JSON SCHEMA STANDARD):
-    # 1. Tool dùng để đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.
-    # 2. Thiết kế các tham số (properties) để LLM trích xuất:
-    #    - student_id (string): Mã sinh viên cần đặt lịch (ví dụ: 'SV2026001')
-    #    - datetime_str (string): Thời gian hẹn (ví dụ: '14:00 15/09/2026')
-    #    - advisor_name (string): Tên cố vấn học tập
-    # 3. Khai báo danh sách các trường bắt buộc (required).
+    # TODO 1.2: HỌC VIÊN HOÀN THIỆN TOOL SCHEMA CHO 'schedule_interview'
     # --------------------------------------------------------------------------
     {
-        "name": "schedule_appointment",
-        "description": "Đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.",
+        "name": "schedule_interview",
+        "description": "Đặt lịch hẹn phỏng vấn cho ứng viên với nhà tuyển dụng.",
         "parameters": {
             "type": "object",
             "properties": {
-                # TODO 1.2: Khai báo các thuộc tính tham số cho Tool tại đây...
+                "candidate_id": {
+                    "type": "string",
+                    "description": "Mã ứng viên cần đặt lịch (ví dụ: 'UV2024001')"
+                },
+                "datetime_str": {
+                    "type": "string",
+                    "description": "Thời gian hẹn (ví dụ: '14:00 20/10/2026')"
+                },
+                "interviewer_name": {
+                    "type": "string",
+                    "description": "Tên người phỏng vấn"
+                }
             },
-            "required": [] # TODO 1.2: Khai báo danh sách các trường bắt buộc tại đây...
+            "required": ["candidate_id", "datetime_str"]
+        }
+    },
+    
+    {
+        "name": "query_candidate_profile",
+        "description": "Tra cứu hồ sơ ứng viên bằng mã ứng viên.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "candidate_id": {
+                    "type": "string",
+                    "description": "Mã ứng viên cần tra cứu (ví dụ: 'UV2024001', 'UV2024002')"
+                }
+            },
+            "required": ["candidate_id"]
         }
     }
 ]
@@ -54,58 +72,96 @@ TOOLS_SCHEMA = [
 # 2. MÔ PHỎNG DỮ LIỆU & HÀM THỰC THI TOOL (EXECUTION LAYER)
 # ==============================================================================
 
-MOCK_DATABASE = {
-    "SV2026001": {
-        "full_name": "Nguyễn Văn An",
-        "class": "AI-K4",
-        "gpa": 3.85,
-        "email": "an.nv@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "PGS.TS Nguyễn Văn A"
+MOCK_JOB_DB = {
+    "DATA SCIENTIST": {
+        "department": "Khối AI & Data",
+        "level": "Middle/Senior",
+        "requirements": [
+            "Tối thiểu 2 năm kinh nghiệm làm việc với Python, SQL.",
+            "Có kinh nghiệm xây dựng các mô hình Machine Learning/Deep Learning.",
+            "Kỹ năng xử lý dữ liệu lớn (Big Data)."
+        ],
+        "salary_range": "2000$ - 3500$"
     },
-    "SV2026002": {
+    "AI ENGINEER": {
+        "department": "Khối AI & Data",
+        "level": "Junior/Middle",
+        "requirements": [
+            "Có kiến thức vững về LLM, NLP, Computer Vision.",
+            "Thành thạo PyTorch hoặc TensorFlow.",
+            "Tiếng Anh đọc hiểu tài liệu chuyên ngành tốt."
+        ],
+        "salary_range": "1500$ - 2500$"
+    }
+}
+
+MOCK_CANDIDATE_DB = {
+    "UV2024001": {
+        "full_name": "Nguyễn Văn An",
+        "applied_position": "AI Engineer",
+        "experience": "1 năm",
+        "skills": ["Python", "PyTorch", "NLP", "LLM"],
+        "email": "an.nv@email.com",
+        "status": "Đang chờ phỏng vấn"
+    },
+    "UV2024002": {
         "full_name": "Trần Thị Bình",
-        "class": "AI-K4",
-        "gpa": 3.60,
-        "email": "binh.tt@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "TS. Lê Thị B"
+        "applied_position": "Data Scientist",
+        "experience": "3 năm",
+        "skills": ["Python", "SQL", "Machine Learning", "Spark"],
+        "email": "binh.tt@email.com",
+        "status": "Đang xem xét CV"
     }
 }
 
 
-def execute_academic_query(student_id: str) -> str:
-    """Thực thi tra cứu học vụ theo mã sinh viên"""
-    student = MOCK_DATABASE.get(student_id.strip().upper())
-    if student:
+def execute_query_job_requirements(job_title: str) -> str:
+    """Thực thi tra cứu tiêu chí tuyển dụng"""
+    job = MOCK_JOB_DB.get(job_title.strip().upper())
+    if job:
         return json.dumps({
             "status": "SUCCESS",
-            "student_id": student_id,
-            "data": student
+            "job_title": job_title,
+            "data": job
         }, ensure_ascii=False)
     else:
         return json.dumps({
             "status": "NOT_FOUND",
-            "message": f"Không tìm thấy dữ liệu sinh viên có mã '{student_id}'"
+            "message": f"Không tìm thấy vị trí tuyển dụng '{job_title}'"
         }, ensure_ascii=False)
 
+def execute_query_candidate_profile(candidate_id: str) -> str:
+    """Thực thi tra cứu hồ sơ ứng viên"""
+    candidate = MOCK_CANDIDATE_DB.get(candidate_id.strip().upper())
+    if candidate:
+        return json.dumps({
+            "status": "SUCCESS",
+            "candidate_id": candidate_id,
+            "data": candidate
+        }, ensure_ascii=False)
+    else:
+        return json.dumps({
+            "status": "NOT_FOUND",
+            "message": f"Không tìm thấy hồ sơ ứng viên có mã '{candidate_id}'"
+        }, ensure_ascii=False)
 
-def execute_schedule_appointment(student_id: str, datetime_str: str, advisor_name: str = "PGS.TS Nguyễn Văn A") -> str:
-    """Thực thi đặt lịch hẹn tư vấn học vụ"""
+def execute_schedule_interview(candidate_id: str, datetime_str: str, interviewer_name: str = "HR Dept") -> str:
+    """Thực thi đặt lịch phỏng vấn"""
     return json.dumps({
         "status": "SUCCESS",
-        "booking_id": f"BK-{student_id}-99",
-        "student_id": student_id,
+        "booking_id": f"INT-{candidate_id}-99",
+        "candidate_id": candidate_id,
         "datetime": datetime_str,
-        "advisor": advisor_name,
-        "message": f"Đặt lịch thành công cho sinh viên {student_id} với {advisor_name} vào lúc {datetime_str}."
+        "interviewer": interviewer_name,
+        "message": f"Đặt lịch phỏng vấn thành công cho ứng viên {candidate_id} vào lúc {datetime_str}."
     }, ensure_ascii=False)
 
 
 # Router gọi tool thực tế
 TOOL_ROUTER = {
-    "academic_query": execute_academic_query,
-    "schedule_appointment": execute_schedule_appointment
+    "query_job_requirements": execute_query_job_requirements,
+    "query_candidate_profile": execute_query_candidate_profile,
+    "schedule_interview": execute_schedule_interview
 }
 
 def dispatch_tool_call(tool_name: str, arguments: Dict[str, Any]) -> str:

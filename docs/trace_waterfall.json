@@ -1,29 +1,29 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
-    "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
-  },
-  {
-    "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Tôi muốn đặt lịch phỏng vấn cho ứng viên UV2024001 vào chiều mai lúc 3h chiều. (Nó sẽ tự hiểu \"3h chiều\" là 15:00 và tự động gọi Tool schedule_interview)",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "schedule_interview",
     "arguments": {
-      "student_id": "SV2026001"
+      "candidate_id": "UV2024001",
+      "datetime_str": "15:00 21/10/2023"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "booking_id": "INT-UV2024001-99",
+      "candidate_id": "UV2024001",
+      "datetime": "15:00 21/10/2023",
+      "interviewer": "HR Dept",
+      "message": "Đặt lịch phỏng vấn thành công cho ứng viên UV2024001 vào lúc 15:00 21/10/2023."
+    },
+    "latency_ms": 1995.11
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Tôi muốn đặt lịch phỏng vấn cho ứng viên UV2024001 vào chiều mai lúc 3h chiều. (Nó sẽ tự hiểu \"3h chiều\" là 15:00 và tự động gọi Tool schedule_interview)",
     "action_type": "FINAL_ANSWER",
     "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
+    "output": "Đặt lịch phỏng vấn thành công cho ứng viên UV2024001 vào lúc 15:00 21/10/2023.",
     "latency_ms": 10.0
   }
 ]

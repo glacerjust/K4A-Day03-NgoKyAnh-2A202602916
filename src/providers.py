@@ -38,25 +38,39 @@ class MockOfflineProvider(BaseLLMProvider):
         prompt_lower = prompt.lower()
         
         # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        if "uv2024001" in prompt_lower and ("đặt lịch" in prompt_lower or "phỏng vấn" in prompt_lower or "gửi thông báo" in prompt_lower):
             return {
                 "type": "tool_call",
-                "tool_name": "schedule_appointment",
-                "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
-                "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
+                "tool_name": "schedule_interview",
+                "arguments": {"candidate_id": "UV2024001", "datetime_str": "14:00 20/10/2026", "interviewer_name": "HR Dept"},
+                "thought": "Người dùng yêu cầu đặt lịch phỏng vấn cho ứng viên UV2024001. Tôi sẽ gọi tool schedule_interview."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
+        elif "data scientist" in prompt_lower or "tiêu chí" in prompt_lower:
             return {
                 "type": "tool_call",
-                "tool_name": "academic_query",
-                "arguments": {"student_id": "SV2026001"},
-                "thought": "Người dùng muốn tra cứu thông tin học vụ của sinh viên SV2026001. Tôi sẽ gọi tool academic_query."
+                "tool_name": "query_job_requirements",
+                "arguments": {"job_title": "Data Scientist"},
+                "thought": "Người dùng muốn tra cứu tiêu chí tuyển dụng cho vị trí Data Scientist. Tôi sẽ gọi tool query_job_requirements."
+            }
+        elif "uv9999999" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "query_candidate_profile",
+                "arguments": {"candidate_id": "UV9999999"},
+                "thought": "Người dùng muốn tra cứu thông tin ứng viên không tồn tại UV9999999."
+            }
+        elif "uv2024002" in prompt_lower:
+            return {
+                "type": "tool_call",
+                "tool_name": "query_candidate_profile",
+                "arguments": {"candidate_id": "UV2024002"},
+                "thought": "Người dùng muốn tra cứu hồ sơ ứng viên UV2024002. Tôi sẽ gọi tool query_candidate_profile."
             }
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": f"[Mock Agent Response]: Xin chào! Quy trình tuyển dụng thường bao gồm vòng Sàng lọc CV, Phỏng vấn Kỹ thuật và Phỏng vấn Văn hóa.",
+                "thought": "Câu hỏi chung về quy trình tuyển dụng, trả lời trực tiếp không cần gọi Tool."
             }
 
 

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, bạn có thể giới thiệu quy trình tuyển dụng cơ bản của công ty không?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt, không cần gọi bất kỳ Tool nào.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu tiêu chí tuyển dụng cho vị trí Data Scientist.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, tự động phát sinh Tool Call 'query_job_requirements' với vị trí Data Scientist.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "appointment_booking",
+    "question": "Bạn có thể gửi thông báo lịch phỏng vấn cho ứng viên UV2024001 vào lúc 14:00 ngày 20/10/2026 được không?",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'schedule_interview' với đúng thời gian và thông tin ứng viên.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Hãy kiểm tra xem ứng viên UV2024002 có phù hợp với vị trí Data Scientist không, nếu có hãy gửi lịch phỏng vấn vào 9:00 sáng mai.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct: Tra cứu tiêu chí tuyển dụng vị trí Data Scientist trước, sau đó đối chiếu và tiến hành gửi lịch phỏng vấn.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Hãy tra cứu thông tin ứng tuyển của mã ứng viên UV9999999.",
+    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool và đưa ra phản hồi lịch sự, chính xác không bịa đặt dữ liệu.",
+    "complexity": "Medium"
+  }
+]
