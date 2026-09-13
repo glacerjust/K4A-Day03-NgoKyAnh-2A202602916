@@ -8,7 +8,7 @@ __pycache__/
 
 # Environment Variables & Keys
 .env
-
+.env.example
 # System & IDE files
 .DS_Store
 Thumbs.db
